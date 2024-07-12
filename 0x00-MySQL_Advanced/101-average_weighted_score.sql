@@ -1,30 +1,24 @@
--- Creates stored procedure ComputeAverageWeightedScoreForUsers.
+-- Drop the procedure if it already exists
 DROP PROCEDURE IF EXISTS ComputeAverageWeightedScoreForUsers;
+
 DELIMITER $$
 
 CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
 BEGIN
-    DECLARE total_weighted_score INT;
-    DECLARE total_weight INT;
-    DECLARE average_weighted_score INT;
-
-    SELECT SUM(corrections.score * projects.weight)
-    INTO total_weighted_score
-    FROM corrections
-    JOIN projects ON corrections.project_id = projects.id;
-
-    SELECT SUM(weight)
-    INTO total_weight
-    FROM projects;
-
-    IF total_weight > 0 THEN
-        SET average_weighted_score = total_weighted_score / total_weight;
-    ELSE
-        SET average_weighted_score = 0;
-    END IF;
-
-    UPDATE users
-    SET average_score = average_weighted_score;
+    UPDATE users u
+    SET average_score = (
+        SELECT  
+            CASE WHEN SUM(corrections.score * projects.weight) IS NOT NULL AND SUM(projects.weight) IS NOT NULL
+                 THEN SUM(corrections.score * projects.weight) / SUM(projects.weight)
+                 ELSE 0 
+            END
+        FROM 
+            corrections
+        JOIN 
+            projects ON projects.id = corrections.project_id
+        WHERE 
+            corrections.user_id = u.id
+    );
 END $$
 
 DELIMITER ;
