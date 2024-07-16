@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-Module
-"""
-
+"""Module"""
 from pymongo import MongoClient
 
 
