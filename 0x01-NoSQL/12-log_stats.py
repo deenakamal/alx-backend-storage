@@ -10,17 +10,14 @@ def log_stats(mongo_collection):
     Provide statistics about Nginx logs stored in MongoDB.
     """
     try:
-        # Total number of logs
         total_logs = mongo_collection.count_documents({})
         print(f"{total_logs} logs")
 
-        # Methods statistics
         print("Methods:")
         for method in HTTP_METHODS:
             method_count = mongo_collection.count_documents({"method": method})
             print(f"\tmethod {method}: {method_count}")
 
-        # Count of logs with method=GET and path=/status
         status_check_count = mongo_collection.count_documents(
                 {"method": "GET", "path": "/status"}
                 )
