@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Module"""
+"""
+Moduel
+"""
 from pymongo import MongoClient
 
 
@@ -7,7 +9,7 @@ HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"]
 
 
 def display_nginx_log_stats(mongo_collection):
-    """ display log"""
+    """ display"""
     total_log_count = mongo_collection.count_documents({})
     print(f"{total_log_count} logs")
 
@@ -18,7 +20,6 @@ def display_nginx_log_stats(mongo_collection):
 
     status_check_count = mongo_collection.count_documents({"method": "GET", "path": "/status"})
     print(f"{status_check_count} status check")
-
     print("IPs:")
     top_ips = mongo_collection.aggregate([
         {"$group": {"_id": "$ip", "count": {"$sum": 1}}},
@@ -30,7 +31,7 @@ def display_nginx_log_stats(mongo_collection):
 
 
 def main():
-    """main"""
+    """ main """
     client = MongoClient('mongodb://127.0.0.1:27017')
     db = client.logs
     nginx_collection = db.nginx
