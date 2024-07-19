@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""
-Cache class module.
-"""
+"""Module"""
+import redis
+from functools import wraps
 import uuid
 from typing import Union, Callable
-from functools import wraps
-import redis
 
 
 def count_calls(method: Callable) -> Callable:
